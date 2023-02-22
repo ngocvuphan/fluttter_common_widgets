@@ -8,6 +8,29 @@ const Duration _kPopupTransitionDuration = Duration(milliseconds: 400);
 const double _kPopupCloseIntervalEnd = 2.0 / 3.0;
 const double _kPopupScreenPadding = 8.0;
 
+/// Show a popup dialog
+///
+/// The [context] is the target context. This argument is required
+///
+/// The [builder] will be invoked to build the dialog. This argument is required
+///
+/// The [useRootNavigator] argument is used to determine whether to push the dialog
+/// to the Navigator furthest from or nearest to the given context. By default,
+/// [useRootNavigator] is true and the dialog route created by this method is pushed
+/// to the root navigator
+///
+/// The [barrierDismissible] argument is used to indicate whether tapping on the
+/// barrier will dismiss the dialog. Default is true
+///
+/// The [barrierColor] argument is used to specify the color of the modal barrier
+/// that darkens everything below the dialog
+///
+/// The [asDropDown] argument will show the dialog as dropdown.
+///
+/// The [useTargetWidth] will show the dialog as the same width as the target
+///
+/// The [dialogWidth] argument define the width of dialog
+///
 Future<T?> showPopupDialog<T>(
   BuildContext context,
   WidgetBuilder builder, {
@@ -17,6 +40,7 @@ Future<T?> showPopupDialog<T>(
   String? barrierLabel,
   bool asDropDown = false,
   bool useTargetWidth = false,
+  double? dialogWidth,
 }) {
   final navigator = Navigator.of(context, rootNavigator: useRootNavigator);
   final renderBox = context.findRenderObject()! as RenderBox;
@@ -38,7 +62,7 @@ Future<T?> showPopupDialog<T>(
     position: position,
     capturedThemes:
         InheritedTheme.capture(from: context, to: navigator.context),
-    dialogWidth: useTargetWidth ? renderBox.size.width : null,
+    dialogWidth: useTargetWidth ? renderBox.size.width : dialogWidth,
     barrierDismissible: barrierDismissible,
     barrierColor: barrierColor,
     barrierLabel: barrierLabel,
@@ -133,12 +157,6 @@ class _PopupDialogLayoutDelegate extends SingleChildLayoutDelegate {
     } else {
       x = asDropDown ? position.left : position.left + targetWidth;
     }
-
-    // if (position.top > position.bottom) {
-    //   y = asDropDown ? position.top - menuSize.height : position.top;
-    // } else {
-    //   y = asDropDown ? position.top + targetHeight : position.top;
-    // }
 
     if (asDropDown) {
       y = position.top + targetHeight;

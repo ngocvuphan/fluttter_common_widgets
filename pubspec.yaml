@@ -1,6 +1,6 @@
 name: vph_common_widgets
 description: Common widgets. This package is not intended for direct use.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/ngocvuphan/fluttter_common_widgets
 
 environment:
