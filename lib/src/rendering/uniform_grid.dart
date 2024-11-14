@@ -1,13 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 
-typedef UniformGridSizeChangedCallback = void Function(
-    Size size, Size cellSize);
+typedef UniformGridSizeChangedCallback = void Function(Size size, Size cellSize);
 
 class _ParentData extends ContainerBoxParentData<RenderBox> {}
 
-class RenderUniformGrid extends RenderBox
-    with ContainerRenderObjectMixin<RenderBox, _ParentData> {
+class RenderUniformGrid extends RenderBox with ContainerRenderObjectMixin<RenderBox, _ParentData> {
   RenderUniformGrid({
     required int columnCount,
     BorderSide borderSide = BorderSide.none,
@@ -101,8 +99,7 @@ class RenderUniformGrid extends RenderBox
     if (_withHeader) {
       while (child != null) {
         final childParentData = child.parentData as _ParentData;
-        child.layout(BoxConstraints.tightFor(width: childWidth),
-            parentUsesSize: true);
+        child.layout(BoxConstraints.tightFor(width: childWidth), parentUsesSize: true);
         childParentData.offset = Offset(delta + childWidth * index, 0);
         headerHeight = math.max(headerHeight, child.size.height);
         child = childParentData.nextSibling;
@@ -113,27 +110,18 @@ class RenderUniformGrid extends RenderBox
     }
 
     /// layout cells
-    final rowCount = _withHeader
-        ? ((childCount - columnCount) / columnCount).floor()
-        : (childCount / columnCount).floor();
-    final childHeight =
-        _squareCell ? childWidth : (height - headerHeight - delta) / rowCount;
+    final rowCount = _withHeader ? ((childCount - columnCount) / columnCount).floor() : (childCount / columnCount).floor();
+    final childHeight = _squareCell ? childWidth : (height - headerHeight - delta) / rowCount;
     while (child != null) {
       final childParentData = child.parentData as _ParentData;
-      final rowIndex =
-          _withHeader ? index ~/ columnCount - 1 : index ~/ columnCount;
-      child.layout(
-          BoxConstraints.tightFor(width: childWidth, height: childHeight),
-          parentUsesSize: true);
-      childParentData.offset = Offset(
-          delta + childWidth * (index % columnCount),
-          headerHeight + childHeight * rowIndex);
+      final rowIndex = _withHeader ? index ~/ columnCount - 1 : index ~/ columnCount;
+      child.layout(BoxConstraints.tightFor(width: childWidth, height: childHeight), parentUsesSize: true);
+      childParentData.offset = Offset(delta + childWidth * (index % columnCount), headerHeight + childHeight * rowIndex);
       child = childParentData.nextSibling;
       index++;
     }
 
-    size = constraints.constrain(Size(width,
-        height.isInfinite ? headerHeight + childHeight * rowCount : height));
+    size = constraints.constrain(Size(width, height.isInfinite ? headerHeight + childHeight * rowCount : height));
     _onSizeChanged?.call(size, Size(childWidth, childHeight));
   }
 
@@ -178,9 +166,7 @@ class RenderUniformGrid extends RenderBox
       offset = offset.translate(delta, firstChild!.size.height);
     }
     final width = size.width - delta * 2;
-    final height = _withHeader
-        ? size.height - delta - firstChild!.size.height
-        : size.height - delta;
+    final height = _withHeader ? size.height - delta - firstChild!.size.height : size.height - delta;
     final Paint paint = Paint()
       ..color = _borderSide.color
       ..strokeWidth = _borderSide.width
@@ -200,8 +186,7 @@ class RenderUniformGrid extends RenderBox
         ..lineTo(offset.dx + i * childWidth, offset.dy + height);
     }
 
-    final rowCount =
-        ((childCount - (_withHeader ? columnCount : 0)) / columnCount).floor();
+    final rowCount = ((childCount - (_withHeader ? columnCount : 0)) / columnCount).floor();
     final childHeight = height / rowCount;
     for (int i = _withHeader ? 1 : 0; i < rowCount; i++) {
       path

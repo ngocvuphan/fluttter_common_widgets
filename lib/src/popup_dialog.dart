@@ -1,6 +1,8 @@
 ///
 /// Reference: flutter/lib/src/material/popup_menu.dart
 ///
+library;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -44,15 +46,12 @@ Future<T?> showPopupDialog<T>(
 }) {
   final navigator = Navigator.of(context, rootNavigator: useRootNavigator);
   final renderBox = context.findRenderObject()! as RenderBox;
-  final overlayRenderBox =
-      navigator.overlay!.context.findRenderObject()! as RenderBox;
+  final overlayRenderBox = navigator.overlay!.context.findRenderObject()! as RenderBox;
 
   final position = RelativeRect.fromRect(
     Rect.fromPoints(
-      renderBox.localToGlobal(renderBox.size.topLeft(Offset.zero),
-          ancestor: overlayRenderBox),
-      renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero),
-          ancestor: overlayRenderBox),
+      renderBox.localToGlobal(renderBox.size.topLeft(Offset.zero), ancestor: overlayRenderBox),
+      renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero), ancestor: overlayRenderBox),
     ),
     Offset.zero & overlayRenderBox.size,
   );
@@ -60,8 +59,7 @@ Future<T?> showPopupDialog<T>(
   return navigator.push(_PopupDialogRoute<T>(
     asDropDown: asDropDown,
     position: position,
-    capturedThemes:
-        InheritedTheme.capture(from: context, to: navigator.context),
+    capturedThemes: InheritedTheme.capture(from: context, to: navigator.context),
     dialogWidth: useTargetWidth ? renderBox.size.width : dialogWidth,
     barrierDismissible: barrierDismissible,
     barrierColor: barrierColor,
@@ -107,14 +105,9 @@ class _PopupDialogRoute<T> extends PopupRoute<T> {
   }
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
     final MediaQueryData mediaQuery = MediaQuery.of(context);
-    final dialog = _Dialog(
-        animation: animation,
-        asDropDown: asDropDown,
-        width: dialogWidth,
-        child: child);
+    final dialog = _Dialog(animation: animation, asDropDown: asDropDown, width: dialogWidth, child: child);
     return CustomSingleChildLayout(
       delegate: _PopupDialogLayoutDelegate(
         position: position,
@@ -143,8 +136,7 @@ class _PopupDialogLayoutDelegate extends SingleChildLayoutDelegate {
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return BoxConstraints.loose(constraints.biggest)
-        .deflate(const EdgeInsets.all(_kPopupScreenPadding));
+    return BoxConstraints.loose(constraints.biggest).deflate(const EdgeInsets.all(_kPopupScreenPadding));
   }
 
   @override
@@ -165,27 +157,21 @@ class _PopupDialogLayoutDelegate extends SingleChildLayoutDelegate {
     }
 
     final Offset wantedPosition = Offset(x, y);
-    final Offset originCenter =
-        position.toRect(Offset.zero & overlaySize).center;
-    final Iterable<Rect> subScreens =
-        DisplayFeatureSubScreen.subScreensInBounds(
-            Offset.zero & overlaySize, avoidBounds);
+    final Offset originCenter = position.toRect(Offset.zero & overlaySize).center;
+    final Iterable<Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & overlaySize, avoidBounds);
     final Rect subScreen = _closestScreen(subScreens, originCenter);
     return _fitInsideScreen(subScreen, menuSize, wantedPosition);
   }
 
   @override
   bool shouldRelayout(covariant _PopupDialogLayoutDelegate oldDelegate) {
-    return position != oldDelegate.position ||
-        !setEquals(avoidBounds, oldDelegate.avoidBounds) ||
-        asDropDown != oldDelegate.asDropDown;
+    return position != oldDelegate.position || !setEquals(avoidBounds, oldDelegate.avoidBounds) || asDropDown != oldDelegate.asDropDown;
   }
 
   Rect _closestScreen(Iterable<Rect> screens, Offset point) {
     Rect closest = screens.first;
     for (final Rect screen in screens) {
-      if ((screen.center - point).distance <
-          (closest.center - point).distance) {
+      if ((screen.center - point).distance < (closest.center - point).distance) {
         closest = screen;
       }
     }
@@ -242,8 +228,7 @@ class _Dialog extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Align(
               widthFactor: asDropDown ? 1.0 : sizeAnimation.evaluate(animation),
-              heightFactor:
-                  asDropDown ? sizeAnimation.evaluate(animation) : 1.0,
+              heightFactor: asDropDown ? sizeAnimation.evaluate(animation) : 1.0,
               child: child,
             ),
           ),

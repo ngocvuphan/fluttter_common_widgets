@@ -6,7 +6,7 @@ export 'rendering/uniform_grid.dart' show UniformGridSizeChangedCallback;
 
 class UniformGrid extends MultiChildRenderObjectWidget {
   /// Render the same column width grid
-  UniformGrid({
+  const UniformGrid({
     super.key,
     super.children,
     required this.columnCount,
@@ -48,8 +48,7 @@ class UniformGrid extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderObject renderObject) {
+  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
     (renderObject as RenderUniformGrid)
       ..columnCount = columnCount
       ..borderSide = borderSide
