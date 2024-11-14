@@ -44,17 +44,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     const columnCount = 6;
-    return UniformGrid(
-      columnCount: columnCount,
-      squareCell: true,
-      // borderSide: const BorderSide(),
-      withHeader: false,
-      children: List.generate(
-        columnCount * 2,
-        (int index) => Container(
-          alignment: Alignment.center,
-          color: Colors.red,
-          child: Text(index.toString()),
+    return MaterialApp(
+      home: Scaffold(
+        body: UniformGrid(
+          columnCount: columnCount,
+          squareCell: true,
+          // borderSide: const BorderSide(),
+          withHeader: false,
+          // ignore: avoid_print
+          onSizeChanged: (size, cellSize) => print("size: $size, cellSize: $cellSize"),
+          children: List.generate(
+            columnCount * 2,
+            (int index) => Container(
+              alignment: Alignment.center,
+              color: Colors.red,
+              child: Text((index + 1).toString()),
+            ),
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:pixel_snap/pixel_snap.dart';
 
 typedef UniformGridSizeChangedCallback = void Function(Size size, Size cellSize);
 
@@ -7,18 +9,30 @@ class _ParentData extends ContainerBoxParentData<RenderBox> {}
 
 class RenderUniformGrid extends RenderBox with ContainerRenderObjectMixin<RenderBox, _ParentData> {
   RenderUniformGrid({
+    required BuildContext context,
     required int columnCount,
     BorderSide borderSide = BorderSide.none,
     bool squareCell = false,
     bool withHeader = true,
     UniformGridSizeChangedCallback? onSizeChanged,
     Size? fixedSize,
-  })  : _columnCount = columnCount,
+  })  : _context = context,
+        _columnCount = columnCount,
         _borderSide = borderSide,
         _squareCell = squareCell,
         _withHeader = withHeader,
         _onSizeChanged = onSizeChanged,
         _fixedSize = fixedSize;
+
+  BuildContext get context => _context;
+  BuildContext _context;
+  set context(BuildContext value) {
+    if (_context == value) {
+      return;
+    }
+    _context = value;
+    markNeedsLayout();
+  }
 
   int get columnCount => _columnCount;
   int _columnCount;
@@ -87,10 +101,11 @@ class RenderUniformGrid extends RenderBox with ContainerRenderObjectMixin<Render
 
   @override
   void performLayout() {
+    final ps = PixelSnap.of(_context);
     final width = _fixedSize?.width ?? constraints.maxWidth;
     final height = _fixedSize?.height ?? constraints.maxHeight;
-    final delta = _borderSide == BorderSide.none ? 0 : _borderSide.width / 2;
-    final childWidth = (width - delta * 2) / columnCount;
+    final delta = (_borderSide == BorderSide.none ? 0 : _borderSide.width / 2).pixelSnap(ps);
+    final childWidth = ((width - delta * 2) / columnCount).pixelSnap(ps);
     double headerHeight = 0;
     int index = 0;
     RenderBox? child = firstChild;
@@ -110,8 +125,8 @@ class RenderUniformGrid extends RenderBox with ContainerRenderObjectMixin<Render
     }
 
     /// layout cells
-    final rowCount = _withHeader ? ((childCount - columnCount) / columnCount).floor() : (childCount / columnCount).floor();
-    final childHeight = _squareCell ? childWidth : (height - headerHeight - delta) / rowCount;
+    final rowCount = (_withHeader ? (childCount - columnCount) / columnCount : childCount / columnCount).floor();
+    final childHeight = _squareCell ? childWidth : ((height - headerHeight - delta) / rowCount).pixelSnap(ps);
     while (child != null) {
       final childParentData = child.parentData as _ParentData;
       final rowIndex = _withHeader ? index ~/ columnCount - 1 : index ~/ columnCount;

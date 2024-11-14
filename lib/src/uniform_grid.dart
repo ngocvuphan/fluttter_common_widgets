@@ -38,6 +38,7 @@ class UniformGrid extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderUniformGrid(
+      context: context,
       columnCount: columnCount,
       borderSide: borderSide,
       squareCell: squareCell,
